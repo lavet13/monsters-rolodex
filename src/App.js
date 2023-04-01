@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import React, { Component } from 'react';
 
@@ -8,51 +7,30 @@ export default class App extends Component {
   constructor() {
     super();
 
+    // initial state of monsters is empty array, because if you fail in a middle of API request,
+    // then what would it matter for a user to see? The user should not see anything that they
+    // should just see the fact there is empty array(nothing should display them)
+    // because nothing was properly fetched.
+    // So in this case, we want to think about what's known as the empty case or the null case.
+    // monsters is a list of users. So what's an empty version of that? Well, it's an empty list
+    // or an empty array.
     this.state = {
-      name: { firstName: 'Yihua', lastName: 'Zhang' },
-      company: 'ZTM',
+      monsters: [],
     };
   }
+
+  // When do I get the list? How do I get the list? Where do I put the list?(it's gonna be in our state)
+  // How?
+  componentDidMount() {}
 
   render() {
     return (
       <div className='App'>
-        <header className='App-header'>
-          <img src={logo} className='App-logo' alt='logo' />
-
-          <p>
-            Hi {this.state.name.firstName} {this.state.name.lastName}, I work at{' '}
-            {this.state.company}
-          </p>
-
-          <button
-            onClick={() => {
-              // shallow merge technique(merging given object with the current state object) that is happening asynchronously
-              // first function is a updater function and that is going to be some function where you return an object that it
-              // will then use to shallow merge against state. Arguments: state, props(which are totally optional)
-              // second function is going to run only after the state is fully updated(optional)
-              this.setState(
-                () => ({
-                  name: {
-                    firstName:
-                      this.state.name.firstName === 'Yihua'
-                        ? 'Andrei'
-                        : 'Yihua',
-                    lastName:
-                      this.state.name.lastName === 'Zhang'
-                        ? 'Neaogie'
-                        : 'Zhang',
-                  },
-                }),
-                () => {
-                  console.log(this.state);
-                }
-              );
-            }}
-          >
-            Change Name
-          </button>
-        </header>
+        {this.state.monsters.map(({ name, id }) => (
+          <div key={id}>
+            <h1>{name}</h1>
+          </div>
+        ))}
       </div>
     );
   }
