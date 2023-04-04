@@ -1,5 +1,6 @@
+import { Component } from 'react';
+import CardList from './components/card-list/card-list.component';
 import './App.css';
-import React, { Component } from 'react';
 
 // local state or just state for short is just some info that only this component is aware of and can modify
 // and could read from
@@ -28,12 +29,7 @@ export default class App extends Component {
   componentDidMount() {
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(res => res.json())
-      .then(users =>
-        this.setState(
-          () => ({ monsters: users }),
-          () => console.log(this.state)
-        )
-      );
+      .then(users => this.setState(() => ({ monsters: users })));
   }
 
   // second optimization: making app a little bit more performance by not
@@ -42,19 +38,16 @@ export default class App extends Component {
   onSearchChange = e => {
     const searchField = e.target.value.toLocaleLowerCase();
 
-    this.setState(
-      () => ({
-        searchField,
-      })
-      // () => console.log(this.state)
-    );
+    this.setState(() => ({
+      searchField,
+    }));
   };
 
   render() {
     // general best practice is to always use non modifying methods, meaning
     // if you going to modify an array, you want to generate a new one.(concept is called immutability)
 
-    // first optimization: more readable(destructuring "this")
+    // first optimization: more readable(destructuring "this" and this.state)
     const { monsters, searchField } = this.state;
     const { onSearchChange } = this;
 
@@ -70,11 +63,7 @@ export default class App extends Component {
           placeholder='search monsters'
           onChange={onSearchChange}
         />
-        {filteredMonsters.map(({ name, id }) => (
-          <div key={id}>
-            <h1>{name}</h1>
-          </div>
-        ))}
+        <CardList monsters={filteredMonsters} />
       </div>
     );
   }
