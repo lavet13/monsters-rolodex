@@ -13,8 +13,8 @@ export default class App extends Component {
     // because nothing was properly fetched.
     this.state = {
       monsters: [],
+      searchField: '', // null case or empty case of what this will be, so the empty case of that is an empty string
     };
-    console.log(1);
   }
 
   // When do I get the list? How do I get the list? Where do I put the list?(it's gonna be in our state)
@@ -26,17 +26,51 @@ export default class App extends Component {
   // API call in order to get data that it needs in order to display the appropriate UI, you wanna put that
   // inside of your componentDidMount lifecycle method.
   componentDidMount() {
-    console.log(3);
     fetch('https://jsonplaceholder.typicode.com/users')
       .then(res => res.json())
-      .then(users => this.setState(() => ({ monsters: users })));
+      .then(users =>
+        this.setState(
+          () => ({ monsters: users }),
+          () => console.log(this.state)
+        )
+      );
   }
 
+  // second optimization: making app a little bit more performance by not
+  // unnecessarily rendering extra anonymous function whenever the render method is
+  // being called.
+  onSearchChange = e => {
+    const searchField = e.target.value.toLocaleLowerCase();
+
+    this.setState(
+      () => ({
+        searchField,
+      })
+      // () => console.log(this.state)
+    );
+  };
+
   render() {
-    console.log(2);
+    // general best practice is to always use non modifying methods, meaning
+    // if you going to modify an array, you want to generate a new one.(concept is called immutability)
+
+    // first optimization: more readable(destructuring "this")
+    const { monsters, searchField } = this.state;
+    const { onSearchChange } = this;
+
+    const filteredMonsters = monsters.filter(({ name }) =>
+      name.toLocaleLowerCase().includes(searchField)
+    );
+
     return (
       <div className='App'>
-        {this.state.monsters.map(({ name, id }) => (
+        <input
+          className='search-box'
+          type='search'
+          placeholder='search monsters'
+          onChange={onSearchChange}
+        />
+        {filteredMonsters.map(({ name, id }) => (
           <div key={id}>
             <h1>{name}</h1>
           </div>
