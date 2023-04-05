@@ -1,6 +1,7 @@
 import { Component } from 'react';
-import CardList from './components/card-list/card-list.component';
 import './App.css';
+import SearchBox from './components/search-box/search-box.component';
+import CardList from './components/card-list/card-list.component';
 
 // local state or just state for short is just some info that only this component is aware of and can modify
 // and could read from
@@ -57,11 +58,10 @@ export default class App extends Component {
 
     return (
       <div className='App'>
-        <input
-          className='search-box'
-          type='search'
+        <SearchBox
+          className='monsters-search-box'
+          onChangeHandler={onSearchChange}
           placeholder='search monsters'
-          onChange={onSearchChange}
         />
         <CardList monsters={filteredMonsters} />
       </div>
