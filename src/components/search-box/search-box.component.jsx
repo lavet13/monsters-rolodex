@@ -1,7 +1,7 @@
 import { Component } from 'react';
 import './search-box.styles.css';
 
-export default class SearchBox extends Component {
+class SearchBox extends Component {
   render() {
     return (
       <input
@@ -13,3 +13,5 @@ export default class SearchBox extends Component {
     );
   }
 }
+
+export default SearchBox;
