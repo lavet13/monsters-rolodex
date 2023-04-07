@@ -1,4 +1,4 @@
-import { useState, Component } from 'react';
+import { useState, useEffect, Component } from 'react';
 import './App.css';
 import SearchBox from './components/search-box/search-box.component';
 import CardList from './components/card-list/card-list.component';
@@ -24,20 +24,34 @@ import CardList from './components/card-list/card-list.component';
 // a function creates some kind of effect outside of it's scope.
 
 const App = () => {
-  console.log('render');
-
   // useState essentially gives us the ability to encapsulate local state
   // in a functional component
   const [searchField, setSearchField] = useState(''); // [value, setValue]
   const [monsters, setMonsters] = useState([]);
+  const [filteredMonsters, setFilterMonsters] = useState(monsters);
 
-  // infinite loop happens because of getting a different array in memory.
-  // It's not about the values in the array, it's about whetheror not that
-  // array points to the same reference in memory(monsters). And every time
-  // this happens, it's a different array in memory.
-  fetch('https://jsonplaceholder.typicode.com/users')
-    .then(res => res.json())
-    .then(users => this.setState(() => ({ monsters: users })));
+  // infinite loop happens because of getting a different array in memory
+  // (it comes from outside of our browser). It's not about the values
+  // in the array, it's about whether or not that array points to the same
+  // reference in memory(monsters). And every time this happens,
+  // it's a different array in memory.(users => setMonsters(users))
+
+  // most likely dependencies are going to be: state values, props values.
+  // Whenever any of the values inside of this dependency array change is
+  // when i'm going to run this callback function
+  useEffect(() => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+      .then(res => res.json())
+      .then(users => setMonsters(users));
+  }, []);
+
+  useEffect(() => {
+    const newFilteredMonsters = monsters.filter(({ name }) =>
+      name.toLocaleLowerCase().includes(searchField)
+    );
+
+    setFilterMonsters(newFilteredMonsters);
+  }, [monsters, searchField]);
 
   const onSearchChange = e => {
     const searchFieldString = e.target.value.toLocaleLowerCase();
@@ -48,18 +62,16 @@ const App = () => {
     // setSearchField(searchField);
   };
 
-  const filteredMonsters = monsters.filter(({ name }) =>
-    name.toLocaleLowerCase().includes(searchField)
-  );
-
   return (
     <div className='App'>
       <h1 className='app-title'>Monsters Rolodex</h1>
+
       <SearchBox
         className='monsters-search-box'
         onChangeHandler={onSearchChange}
         placeholder='search monsters'
       />
+
       <CardList monsters={filteredMonsters} />
     </div>
   );
