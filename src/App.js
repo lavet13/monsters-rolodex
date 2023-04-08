@@ -30,6 +30,7 @@ const App = () => {
   const [monsters, setMonsters] = useState([]);
   const [filteredMonsters, setFilterMonsters] = useState(monsters);
 
+  console.log('rendered');
   // infinite loop happens because of getting a different array in memory
   // (it comes from outside of our browser). It's not about the values
   // in the array, it's about whether or not that array points to the same
