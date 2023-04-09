@@ -27,6 +27,7 @@ const App = () => {
   // useState essentially gives us the ability to encapsulate local state
   // in a functional component
   const [searchField, setSearchField] = useState(''); // [value, setValue]
+  const [title, setTitle] = useState('');
   const [monsters, setMonsters] = useState([]);
   const [filteredMonsters, setFilterMonsters] = useState(monsters);
 
@@ -63,14 +64,29 @@ const App = () => {
     // setSearchField(searchField);
   };
 
+  const onTitleChange = e => {
+    const searchFieldString = e.target.value.toLocaleLowerCase();
+
+    setTitle(searchFieldString);
+    // if the current string value of our state is the same as the new string value coming in
+    // literally the string value, so the exact same then we won't re-render
+    // setSearchField(searchField);
+  };
+
   return (
     <div className='App'>
-      <h1 className='app-title'>Monsters Rolodex</h1>
+      <h1 className='app-title'>{title}</h1>
 
       <SearchBox
         className='monsters-search-box'
         onChangeHandler={onSearchChange}
         placeholder='search monsters'
+      />
+      <br />
+      <SearchBox
+        className='title-search-box'
+        onChangeHandler={onTitleChange}
+        placeholder='set title'
       />
 
       <CardList monsters={filteredMonsters} />
