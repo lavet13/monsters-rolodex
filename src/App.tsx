@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 
 import SearchBox from './components/search-box/search-box.component';
 import CardList from './components/card-list/card-list.component';
@@ -7,7 +7,7 @@ import { getData } from './utils/data.utils';
 
 import './App.css';
 
-type Monster = {
+export type Monster = {
   id: string;
   name: string;
   email: string;
@@ -21,10 +21,6 @@ const App = () => {
 
   console.log('rendered');
   useEffect(() => {
-    // fetch('https://jsonplaceholder.typicode.com/users')
-    //   .then(res => res.json())
-    //   .then(users => setMonsters(users));
-
     const fetchUsers = async () => {
       const users = await getData<Monster[]>(
         'https://jsonplaceholder.typicode.com/users'
@@ -44,14 +40,14 @@ const App = () => {
     setFilterMonsters(newFilteredMonsters);
   }, [monsters, searchField]);
 
-  const onSearchChange = e => {
-    const searchFieldString = e.target.value.toLocaleLowerCase();
+  const onSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const searchFieldString = event.target.value.toLocaleLowerCase();
 
     setSearchField(searchFieldString);
   };
 
-  const onTitleChange = e => {
-    const searchFieldString = e.target.value.toLocaleLowerCase();
+  const onTitleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    const searchFieldString = event.target.value.toLocaleLowerCase();
 
     setTitle(searchFieldString);
   };
