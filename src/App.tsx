@@ -1,50 +1,39 @@
-import { useState, useEffect, Component } from 'react';
-import './App.css';
+import { useState, useEffect } from 'react';
+
 import SearchBox from './components/search-box/search-box.component';
 import CardList from './components/card-list/card-list.component';
 
-// Functional components do NOT go through life cycles the way
-// that we typically think about when we're talking about
-// class components. It's almost an entirely different mental
-// model. There's NO life cycles when it comes to functional
-// components. You have to think about it in a completely
-// different way, and the way you want to think about them
-// is in the concept of functions(pure and impure functions)
-// and side effects.
+import { getData } from './utils/data.utils';
 
-// pure function, there are mainly two things to consider:
-// 1) What a pure function should do is return the exact same
-// thing, no matter how many times it gets called, when it's
-// given the same arguments.
-// It should solely be dependent on the props being passed in,
-// not some external variable that outside of the function.
-// 2) Pure function should NOT produce side effects.
-// (i.e. changing some external variable, logging something to
-// the console, modifying some node in the DOM). Side effect is when
-// a function creates some kind of effect outside of it's scope.
+import './App.css';
+
+type Monster = {
+  id: string;
+  name: string;
+  email: string;
+};
 
 const App = () => {
-  // useState essentially gives us the ability to encapsulate local state
-  // in a functional component
   const [searchField, setSearchField] = useState(''); // [value, setValue]
   const [title, setTitle] = useState('');
-  const [monsters, setMonsters] = useState([]);
+  const [monsters, setMonsters] = useState<Monster[]>([]);
   const [filteredMonsters, setFilterMonsters] = useState(monsters);
 
   console.log('rendered');
-  // infinite loop happens because of getting a different array in memory
-  // (it comes from outside of our browser). It's not about the values
-  // in the array, it's about whether or not that array points to the same
-  // reference in memory(monsters). And every time this happens,
-  // it's a different array in memory.(users => setMonsters(users))
-
-  // most likely dependencies are going to be: state values, props values.
-  // Whenever any of the values inside of this dependency array change is
-  // when i'm going to run this callback function
   useEffect(() => {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then(res => res.json())
-      .then(users => setMonsters(users));
+    // fetch('https://jsonplaceholder.typicode.com/users')
+    //   .then(res => res.json())
+    //   .then(users => setMonsters(users));
+
+    const fetchUsers = async () => {
+      const users = await getData<Monster[]>(
+        'https://jsonplaceholder.typicode.com/users'
+      );
+
+      setMonsters(users);
+    };
+
+    fetchUsers();
   }, []);
 
   useEffect(() => {
@@ -59,18 +48,12 @@ const App = () => {
     const searchFieldString = e.target.value.toLocaleLowerCase();
 
     setSearchField(searchFieldString);
-    // if the current string value of our state is the same as the new string value coming in
-    // literally the string value, so the exact same then we won't re-render
-    // setSearchField(searchField);
   };
 
   const onTitleChange = e => {
     const searchFieldString = e.target.value.toLocaleLowerCase();
 
     setTitle(searchFieldString);
-    // if the current string value of our state is the same as the new string value coming in
-    // literally the string value, so the exact same then we won't re-render
-    // setSearchField(searchField);
   };
 
   return (
